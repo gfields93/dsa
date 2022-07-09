@@ -2,7 +2,6 @@
 
 
 from typing import List, Optional
-from unittest import removeHandler
 
 class TreeNode:
     def __init__(self, value: int) -> None:
@@ -22,7 +21,7 @@ class BinarySearchTree:
             self.insert_node(self.root, value)
         self.count += 1
             
-    def insert_node(self, current: TreeNode, value: int):
+    def _insert_node(self, current: TreeNode, value: int):
         if value < current.value:
             if current.left is None:
                 current.left = TreeNode(value)
@@ -85,7 +84,7 @@ class BinarySearchTree:
             # nodeToBeRemoved.value = largestValue.value
         self.count -= 1
 
-    def find_parent(self, value: int) -> Optional[TreeNode]:
+    def _find_parent(self, value: int) -> Optional[TreeNode]:
         def inner_func(value: int, node: TreeNode):
             if value == node.value:
                 return None
@@ -106,7 +105,7 @@ class BinarySearchTree:
         
         return inner_func(value, self.root)
 
-    def find_node(self, value: int) -> Optional[TreeNode]:
+    def _find_node(self, value: int) -> Optional[TreeNode]:
         def inner_func(node: TreeNode,value: int):
             if node is None:
                 return None
