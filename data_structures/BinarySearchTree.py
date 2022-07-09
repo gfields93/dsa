@@ -2,7 +2,7 @@
 
 
 from typing import List, Optional
-from typing_extensions import Self
+from unittest import removeHandler
 
 class TreeNode:
     def __init__(self, value: int) -> None:
@@ -16,7 +16,7 @@ class BinarySearchTree:
         self.count = 0
 
     def insert(self, value: int):
-        if self.root is not None:
+        if self.root is None:
             self.root = TreeNode(value)
         else:
             self.insert_node(self.root, value)
@@ -38,7 +38,7 @@ class BinarySearchTree:
         def inner_func(node: TreeNode, value: int):
             if node is None:
                 return False
-            if node.value is value:
+            if node.value == value:
                 return True
             elif value < node.value:
                 return inner_func(node.left, value)
@@ -50,7 +50,7 @@ class BinarySearchTree:
     def remove(self, value: int):
         nodeToBeRemoved = self.find_node(value)
         if nodeToBeRemoved is None:
-            return False
+            return None
         parent: Optional[TreeNode] = self.find_parent(value)
         if self.count == 1:
             self.root = None 
@@ -65,7 +65,7 @@ class BinarySearchTree:
             else:
                 parent.right = nodeToBeRemoved.right
         elif nodeToBeRemoved.left is not None and nodeToBeRemoved.right is None:
-            if nodeToBeRemoved.value < parent.parent.value:
+            if nodeToBeRemoved.value < parent.value:
                 parent.left = nodeToBeRemoved.left
             else:
                 parent.right = nodeToBeRemoved.left
@@ -73,37 +73,45 @@ class BinarySearchTree:
             largestValue: TreeNode = nodeToBeRemoved.left
             while largestValue.right is not None:
                 largestValue = largestValue.right
-            self.find_parent(largestValue).right = None
-            nodeToBeRemoved.value = largestValue.value
+            # removedNodeParent = self.find_parent(nodeToBeRemoved)
+            if nodeToBeRemoved is self.root:
+                largestValue.right = self.root.right
+                self.root = largestValue
+            else:
+                largestValue.right = nodeToBeRemoved.right
+                parent.right = largestValue
+
+            # self.find_parent(largestValue.value).right = None
+            # nodeToBeRemoved.value = largestValue.value
         self.count -= 1
 
     def find_parent(self, value: int) -> Optional[TreeNode]:
-        def inner_func(value, root: TreeNode):
-            if value == root.value:
+        def inner_func(value: int, node: TreeNode):
+            if value == node.value:
                 return None
-            if value < root.value:
-                if root.left is None:
+            if value < node.value:
+                if node.left is None:
                     return None
-                elif root.left.value == value:
-                    return root
+                elif node.left.value == value:
+                    return node
                 else:
-                    return inner_func(value, root.left)
+                    return inner_func(value, node.left)
             else:
-                if root.right is None:
+                if node.right is None:
                     return None
-                elif root.right.value == value:
-                    return root
+                elif node.right.value == value:
+                    return node
                 else:
-                    return inner_func(value, root.right)
+                    return inner_func(value, node.right)
         
         return inner_func(value, self.root)
 
     def find_node(self, value: int) -> Optional[TreeNode]:
         def inner_func(node: TreeNode,value: int):
-            if self.root is None:
+            if node is None:
                 return None
-            if self.root.value == value:
-                return self.root
+            if node.value == value:
+                return node
             elif value < node.value:
                 return inner_func(node.left, value)
             else:
@@ -112,20 +120,20 @@ class BinarySearchTree:
         return inner_func(self.root, value)
 
     def find_min(self):
-        def inner_func(root: TreeNode) -> TreeNode:
-            if root.left is None:
-                return root.value
+        def inner_func(node: TreeNode) -> TreeNode:
+            if node.left is None:
+                return node
             else:
-                return self.find_min(root.left)
+                return inner_func(node.left)
 
-        inner_func(self.root)
+        return inner_func(self.root)
     
     def find_max(self):
         def inner_func(root: TreeNode) -> TreeNode:
             if root.right is None:
-                return root.value
+                return root
             else:
-                return self.find_max(root.right)
+                return inner_func(root.right)
 
         return inner_func(self.root)
 
@@ -177,3 +185,5 @@ class BinarySearchTree:
                 current_node = q.pop(0)
             else:
                 current_node = None
+
+        return visitedNodes
