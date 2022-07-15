@@ -18,7 +18,7 @@ class BinarySearchTree:
         if self.root is None:
             self.root = TreeNode(value)
         else:
-            self.insert_node(self.root, value)
+            self._insert_node(self.root, value)
         self.count += 1
             
     def _insert_node(self, current: TreeNode, value: int):
@@ -26,12 +26,12 @@ class BinarySearchTree:
             if current.left is None:
                 current.left = TreeNode(value)
             else:
-                self.insert_node(current.left, value)
+                self._insert_node(current.left, value)
         else:
             if current.right is None:
                 current.right = TreeNode(value)
             else:
-                self.insert_node(current.right, value)
+                self._insert_node(current.right, value)
 
     def contains(self, value: int) -> bool:
         def inner_func(node: TreeNode, value: int):
